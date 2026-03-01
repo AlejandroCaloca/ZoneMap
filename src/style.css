@@ -69,6 +69,7 @@ body, html {
   height: 100%;
 }
 
+
 /* Bottom controls */
 #bottom-controls {
   position: absolute;
@@ -98,24 +99,64 @@ body, html {
 }
 
 /* Pin pulse animation injected via JS */
+
+/* Pin pulse animation (applies to pseudo-element, not the marker itself) */
 @keyframes pin-pulse {
-  0%   { opacity: 1; transform: scale(1); }
-  50%  { opacity: 0.6; transform: scale(1.4); }
-  100% { opacity: 1; transform: scale(1); }
+  0%   { opacity: 0.9; transform: scale(1); }
+  50%  { opacity: 0.4; transform: scale(1.6); }
+  100% { opacity: 0.9; transform: scale(1); }
 }
 
+/* Base marker (do NOT animate transform here) */
 .pin-marker {
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.6);
+  border: 2px solid rgba(255, 255, 255, 0.75);
   cursor: pointer;
+  position: relative;
+  z-index: 10;
+}
+
+/* Pulse ring */
+.pin-marker::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
   animation: pin-pulse 2s ease-in-out infinite;
 }
 
-.pin-marker.high   { background: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.7); }
-.pin-marker.medium { background: #eab308; box-shadow: 0 0 10px rgba(234, 179, 8, 0.7); }
-.pin-marker.low    { background: #22c55e; box-shadow: 0 0 10px rgba(34, 197, 94, 0.7); }
+/* Severity colors */
+.pin-marker.high {
+  background: #ef4444;
+  color: rgba(239, 68, 68, 0.7);
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.8);
+}
+
+.pin-marker.medium {
+  background: #eab308;
+  color: rgba(234, 179, 8, 0.7);
+  box-shadow: 0 0 12px rgba(234, 179, 8, 0.8);
+}
+
+.pin-marker.low {
+  background: #22c55e;
+  color: rgba(34, 197, 94, 0.7);
+  box-shadow: 0 0 12px rgba(34, 197, 94, 0.8);
+}
+
+/* Ensure marker container stays above tiles */
+.maplibregl-marker {
+  z-index: 10;
+}
+
+.maplibregl-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
 
 /* ── MapLibre popup overrides ─────────────────────────────────────── */
 .maplibregl-popup-content {

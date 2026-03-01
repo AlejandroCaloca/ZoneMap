@@ -56,13 +56,25 @@ const map = new maplibregl.Map({
 map.addControl(new maplibregl.AttributionControl({ compact: true }), 'bottom-right');
 
 // Navigation controls (zoom +/-)
-map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
 
 // ---------------------------------------------------------------------------
 // Render demo pins after map loads
 // ---------------------------------------------------------------------------
+
+//
 map.on('load', () => {
-  DEMO_PINS.forEach((pin) => addPinMarker(pin));
+  // Give the browser one frame to layout the container
+  requestAnimationFrame(() => {
+    map.resize();
+    DEMO_PINS.forEach((pin) => addPinMarker(pin));
+  });
+});
+//
+
+
+window.addEventListener('resize', () => {
+  map.resize();
 });
 
 /**
@@ -70,6 +82,9 @@ map.on('load', () => {
  * @param {object} pin
  */
 function addPinMarker(pin) {
+  //log for debuggin pins, remove afterwards
+  console.log('adding pin', pin.id);
+
   const el = document.createElement('div');
   el.className = `pin-marker ${pin.severity}`;
   el.title = `${pin.category.toUpperCase()} — ${pin.severity}`;
@@ -81,6 +96,7 @@ function addPinMarker(pin) {
 
   // Open popup on click of the marker element
   el.addEventListener('click', () => marker.togglePopup());
+
 }
 
 /**
